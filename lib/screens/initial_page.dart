@@ -1,10 +1,12 @@
 import 'package:bingo/screens/widgets/number_pad.dart';
 import 'package:bingo/value/colors.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 int currentIndex = 0;
 List digitList = List.generate(25, (index) => -1);
 List cacheList = [];
+ValueNotifier<bool> isFilled = ValueNotifier(false);
 class InitalPage extends StatefulWidget {
   const InitalPage({super.key});
 
@@ -13,10 +15,8 @@ class InitalPage extends StatefulWidget {
 }
 
 class _InitalPageState extends State<InitalPage> {
-  
   void keyPressed(int index, bool removeDigit) {
     if (cacheList.length < 26) {
-      
       if (removeDigit) {
         digitList[currentIndex] = -1;
         cacheList.removeAt(currentIndex);
@@ -30,6 +30,8 @@ class _InitalPageState extends State<InitalPage> {
     setState(() {});
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,11 +42,27 @@ class _InitalPageState extends State<InitalPage> {
         elevation: 0,
         toolbarHeight: 70,
         centerTitle: true,
+        leading: IconButton(
+          splashRadius: 20,
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(
+            CupertinoIcons.back,
+            color: Color.fromARGB(255, 68, 67, 67),
+            size: 30,
+          ),
+        ),
         title: const Text(
           "Enter Random Numbers !",
           style: TextStyle(
             fontSize: 25,
-            color: Color.fromARGB(255, 29, 89, 138),
+            color: Color.fromARGB(
+              255,
+              29,
+              89,
+              138,
+            ),
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -86,7 +104,25 @@ class _InitalPageState extends State<InitalPage> {
                 },
               ),
             ),
-
+            ValueListenableBuilder(
+              valueListenable: isFilled,
+              builder: (context,isFilled,ctx) {
+                
+                return Visibility(
+                  
+                  visible: isFilled,
+                  child: const Center(
+                    child: Text(
+                      "Fill the board, then continue",
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 161, 28, 18),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w400),
+                    ),
+                  ),
+                );
+              }
+            ),
             //Number pad
 
             Column(

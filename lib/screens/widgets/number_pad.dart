@@ -28,8 +28,13 @@ class NumberPad extends StatelessWidget {
               ?
               // Submit button
               CupertinoButton(
-                  onPressed: () {
-                    //if (digitList.contains(-1)) return;
+                  onPressed: () async{
+                    if (digitList.contains(-1)) {
+                      isFilled.value = true;
+                      await Future.delayed(const Duration(seconds: 2));
+                      isFilled.value = false;
+                      return;
+                    }
 
                     Navigator.pushReplacement(
                       context,

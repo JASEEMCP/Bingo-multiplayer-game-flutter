@@ -5,6 +5,8 @@ import 'package:bingo/value/colors.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:just_audio/just_audio.dart';
 
 import 'widgets/bingo_text_widget.dart';
 
@@ -39,9 +41,11 @@ class _ScreenPlayScreenState extends State<ScreenPlayScreen> {
   int finishCount = 0;
   int numberOfDigitsLeft = 0;
   int curruntIndex = -1;
-
-  void boxPressed(int row, int column, int index) {
-    //Change Bingo board properties
+  AudioPlayer buttonPressedAudioPlayer = AudioPlayer();
+  String audioasset = "assets/audio/click-button-140881.mp3";
+  void boxPressed(int row, int column, int index) async {
+    buttonPressedAudioPlayer.play();
+    //Change Bingo board propertiesplayBytes(bytedata);
     strickDigit[index] = StrickDigit(
         isSelected: true, column: column, row: row, isStrick: false);
     curruntIndex += 1;
@@ -86,10 +90,17 @@ class _ScreenPlayScreenState extends State<ScreenPlayScreen> {
         }
       }
     }
+
     setState(() {});
+
+    await buttonPressedAudioPlayer.setAsset(audioasset);
   }
 
   late ConfettiController controllerTopCenter;
+  late Uint8List audiobytes;
+  void initializeSFX() async {
+    await buttonPressedAudioPlayer.setAsset(audioasset);
+  }
 
   void initController() {
     controllerTopCenter =
@@ -99,6 +110,7 @@ class _ScreenPlayScreenState extends State<ScreenPlayScreen> {
   @override
   void initState() {
     initController();
+    initializeSFX();
     super.initState();
   }
 
@@ -106,6 +118,9 @@ class _ScreenPlayScreenState extends State<ScreenPlayScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // WidgetsFlutterBinding().addPostFrameCallback((timeStamp) {
+    //   //initController();
+    // });
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -222,7 +237,7 @@ class _ScreenPlayScreenState extends State<ScreenPlayScreen> {
                     //       //Step one back button
                     //       child: IconButton(
                     //         onPressed: () {
-                              
+
                     //         },
                     //         icon: const Icon(
                     //           CupertinoIcons.back,
